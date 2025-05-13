@@ -13,12 +13,14 @@ def print_message(bytes_data: bytes):
     message = bytes_data[user_name_len + 1:].decode()
     print(f"{user_name}: {message}")
 
-def receive_message(sock: socket, user_name: str):
+# send address to input function
+def receive_message(sock: socket, user_name: str, ):
     while True:
-        response_data = sock.recv(4096)
+        response_data, _ = sock.recvfrom(4096)
         print("\033[2K\r", end="")
         print_message(response_data)
         print(f"{user_name} :> ", end="", flush=True) 
+
 
 def input_message(sock: socket, user_name: str, server_address):
     while True:
@@ -26,18 +28,26 @@ def input_message(sock: socket, user_name: str, server_address):
         print("\033[1A\033[2K", end="")
         print(f"{user_name} : {message}")
         data = protocol_header(len(user_name)) + (user_name + message).encode()
+        #sock.send(data)
         sock.sendto(data, server_address)
 
 def main():
     # AF_INET allow to use IPv4 to communicate with a remote machine
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # address listen all available network
-    sock.bind(('', 0))
 
     server_address = ('0.0.0.0', 8000)
 
     user_name = input('Enter username: ')
     print(f"{user_name} has joined the chat")
+
+
+    '''
+    try:
+        sock.connect((server_address, server_port))
+    except socket.error as err:
+        print(err)
+        sys.exit(1)
+    '''
 
     
     init_data = protocol_header(len(user_name)) + (user_name + "").encode()
