@@ -20,34 +20,31 @@ def receive_message(sock: socket, user_name: str):
         print_message(response_data)
         print(f"{user_name} :> ", end="", flush=True) 
 
-def input_message(sock: socket, user_name: str):
+def input_message(sock: socket, user_name: str, server_address):
     while True:
         message = input(f"{user_name} :> ")
         print("\033[1A\033[2K", end="")
         print(f"{user_name} : {message}")
         data = protocol_header(len(user_name)) + (user_name + message).encode()
-        sock.send(data)
+        sock.sendto(data, server_address)
 
 def main():
     # AF_INET allow to use IPv4 to communicate with a remote machine
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # address listen all available network
-    server_address = '0.0.0.0'
-    server_port = 8000
+    sock.bind(('', 0))
 
-    try:
-        sock.connect((server_address, server_port))
-    except socket.error as err:
-        print(err)
-        sys.exit(1)
+    server_address = ('0.0.0.0', 8000)
 
     user_name = input('Enter username: ')
     print(f"{user_name} has joined the chat")
 
     
+    init_data = protocol_header(len(user_name)) + (user_name + "").encode()
+    sock.sendto(init_data, server_address)
 
     # daemon thread when main prigram finish thread automatically exit
-    input_message_thread =  threading.Thread(target=input_message, args=(sock, user_name), daemon=True)
+    input_message_thread =  threading.Thread(target=input_message, args=(sock, user_name, server_address), daemon=True)
     receive_message_thread =  threading.Thread(target=receive_message, args=(sock, user_name), daemon=True)
 
     # prevent to block thread which use input()

@@ -29,6 +29,10 @@ def main():
             user_name = data[1: user_name_len + 1].decode()
             # ignore first usernmae length and take out latter massge data
             message = data[user_name_len + 1:].decode()
+
+            if message.strip() == "":
+                continue
+
             print("Username: ", user_name)
             print("Message: ", message)
             print("/-----------------/")
