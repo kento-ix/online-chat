@@ -8,7 +8,7 @@ def main():
     # address listen all available network
     server_address = '0.0.0.0'
     server_port = 8000
-    print(f"Starting up on port {server_port}")
+    print(f"Starting up on port {server_port}\n")
     sock.bind((server_address, server_port))
 
     clients = []
@@ -31,6 +31,7 @@ def main():
             message = data[user_name_len + 1:].decode()
             print("Username: ", user_name)
             print("Message: ", message)
+            print("/-----------------/")
 
             # broad cast message 
             for client in clients:
