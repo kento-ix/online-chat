@@ -1,5 +1,4 @@
 import socket
-import sys
 import threading
 
 def protocol_header(username_len):
@@ -14,8 +13,10 @@ def print_message(bytes_data: bytes):
     print(f"{user_name}: {message}")
 
 # send address to input function
-def receive_message(sock: socket, user_name: str, ):
+def receive_message(sock: socket, user_name: str):
     while True:
+        # recvfrom() receive source adress inforation
+        # ignore address
         response_data, _ = sock.recvfrom(4096)
         print("\033[2K\r", end="")
         print_message(response_data)
@@ -41,12 +42,16 @@ def main():
     print(f"{user_name} has joined the chat")
 
 
+
+
     '''
     try:
         sock.connect((server_address, server_port))
     except socket.error as err:
         print(err)
         sys.exit(1)
+
+    -connect() receicing the sercer is blocked
     '''
 
     
@@ -64,6 +69,5 @@ def main():
     # stop threads till finish main function
     input_message_thread.join()
     receive_message_thread.join()
-
 if __name__ == "__main__":
     main()

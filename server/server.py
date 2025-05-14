@@ -1,4 +1,9 @@
 import socket
+import time
+import threading
+
+
+
 
 
 def main():
@@ -11,7 +16,9 @@ def main():
     print(f"Starting up on port {server_port}\n")
     sock.bind((server_address, server_port))
 
-    clients = []
+    client_list = []
+
+    
 
     while True:
         try:
@@ -20,8 +27,8 @@ def main():
                 continue
 
             # add client if not exit
-            if address not in clients:
-                clients.append(address)
+            if address not in client_list:
+                client_list.append(address)
             
             # take out user name from first byte
             user_name_len = int.from_bytes(data[:1], "big")
@@ -35,10 +42,11 @@ def main():
 
             print("Username: ", user_name)
             print("Message: ", message)
+            print(f"Current on relay system: {len(client_list)}")
             print("/-----------------/")
 
             # broad cast message 
-            for client in clients:
+            for client in client_list:
                 if client != address:
                     sock.sendto(data, client)
 
