@@ -59,8 +59,8 @@ def main():
     sock.sendto(init_data, server_address)
 
     # daemon thread when main prigram finish thread automatically exit
-    input_message_thread =  threading.Thread(target=input_message, args=(sock, user_name, server_address), daemon=True)
-    receive_message_thread =  threading.Thread(target=receive_message, args=(sock, user_name), daemon=True)
+    input_message_thread =  threading.Thread(target=input_message, args=(sock, user_name, server_address,), daemon=True)
+    receive_message_thread =  threading.Thread(target=receive_message, args=(sock, user_name,), daemon=True)
 
     # prevent to block thread which use input()
     input_message_thread.start()
